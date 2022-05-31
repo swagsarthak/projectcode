@@ -1,0 +1,102 @@
+########   FOR GETTING COURSEID   ##########
+
+function getClassData() {
+  let data = Classroom.Courses.list().courses;
+  data = data.filter(c => c.courseState === 'Active');
+  const ssData = data.map(c => {
+    return [c.name ,c.section, c.room , c.description ,c.enrollmentCode ,c.courseState,c.id] ;  // UNESSECARY NAME SECTION ROOM DESCRIPTION ETC.
+   
+  });
+   
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ws = ss.getSheetByName("Sheet1");
+  ws.getRange(2,1,ssData.length,ssData[1].length).setValues(ssData);
+  //var sassy = Classroom.Courses.CourseWork.list(c.id);
+  var octo = SpreadsheetApp.getActiveSheet();
+  var sheet2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet2');
+  var lastrow = sheet2.getLastRow();
+   //const course_ID="447793867499";
+   const lava = Classroom.Courses.CourseWork.list(c.id).courseWork;
+   //const foot = lava.map( d=> {
+    //console.log(d.id);
+  //});
+}
+
+########   FOR GETTING COURSE_WORKID (ID FOR NAME OF SUBMISSION EITHER ASSIGNMENT QUIZ OR EXPERIMENT)  ##########
+
+function getStudents(){
+  
+   var course_ID ="447793867499";  // THIS CAN VARY AS THIS IS ID FOR ASSIGNMENT 1 IN MY CREATED CLASSROOM
+   const lava = Classroom.Courses.CourseWork.list(course_ID).courseWork;
+   const foot = lava.map( d=> {
+    console.log(d.id);
+  });
+};
+
+
+########   FOR GETTING STUDENT NAME EMAIL AND HIS SCORE PROVIDED BY THE TEACHER  ##########
+function diluted() {
+  //const course_work_id= "-";   // THIS IS DONE FOR EVERY ASSIGNENT AVAILABLE ,SINCE I HAVE JUST POSTED 1 ASSIGNMENT ID WAS NOT NESSACARY 
+  const course_ID= "447793867499";
+  let mava = Classroom.Courses.Students.list(course_ID).students;
+  let gava = Classroom.Courses.CourseWork.StudentSubmissions.list(course_ID,course_work_id="-").studentSubmissions;
+  const soot = gava.map(e=>{
+    return[e.assignedGrade,e.draftGrade,e.creationTime,e.updateTime];
+    //console.log(e.draftGrade);
+    //console.log(e.assignedGrade);
+    //console.log(e.creationTime);
+    //console.log(e.state);
+
+  }
+  )
+  const doot= mava.map(f=>{
+    return[f.profile.emailAddress];
+    // console.log(f.profile);
+  })
+   const sh= SpreadsheetApp.getActiveSpreadsheet();
+   const so = sh.getSheetByName("Google Classroom");
+   //so.getRange(2,1,soot.length,soot[0].length).setValues(soot);
+   const po =sh.getSheetByName("Google Classroom");
+   //po.getRange(2,5,doot.length,doot[0].length).setValues(doot);
+}
+
+########   CONNECTION BETWEEN ONLINE SQL SERVER AND DATABASE STORED IN GOOGLE SPREADSHEET FOR FURTHER ACCESSING  ##########
+var server = '11.11.11.11';
+var port = 3306;
+var dbName = 'dummy';
+var username = 'username';
+var password = 'password';
+var url = 'jdbc:mysql://'+server+':'+port+'/'+dbName;
+
+function readData() {
+ var conn = Jdbc.getConnection(url, username, password);
+ var stmt = conn.createStatement();
+ var results = stmt.executeQuery('SELECT * FROM dashboard_dummy');
+ var metaData=results.getMetaData();
+ var numCols = metaData.getColumnCount();
+ var spreadsheet = SpreadsheetApp.getActive();
+ var sheet = spreadsheet.getSheetByName('Sheet3');
+ sheet.clearContents();
+ var arr=[];
+
+ for (var col = 0; col < numCols; col++) {
+   arr.push(metaData.getColumnName(col + 1));
+ }
+
+ sheet.appendRow(arr);
+
+while (results.next()) {
+ arr=[];
+ for (var col = 0; col < numCols; col++) {
+   arr.push(results.getString(col + 1));
+ }
+ sheet.appendRow(arr);
+}
+
+results.close();
+stmt.close();
+sheet.autoResizeColumns(1, numCols+1);
+} 
+
+
+
